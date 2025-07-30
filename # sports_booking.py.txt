@@ -1,0 +1,40 @@
+# sports_booking.py
+
+import streamlit as st
+import pandas as pd
+import datetime
+
+st.set_page_config(page_title="Sports Item Booking")
+
+st.title("🏏 Sports Room Booking System")
+
+# Create a session-based booking storage
+if 'bookings' not in st.session_state:
+    st.session_state.bookings = []
+
+# Input form
+reg_id = st.text_input("Enter your Registration ID")
+item = st.selectbox("Choose an Item", ["Bat", "Ball", "Football", "Racket"])
+book_btn = st.button("Book Now")
+
+# Booking logic
+if book_btn:
+    if reg_id.strip() == "":
+        st.warning("Please enter a valid Registration ID.")
+    else:
+        booking = {
+            "Registration ID": reg_id,
+            "Item": item,
+            "Time": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        st.session_state.bookings.append(booking)
+        st.success(f"✅ {item} booked successfully for ID: {reg_id}")
+
+# Display bookings
+if st.checkbox("📋 Show Booking List"):
+    if st.session_state.bookings:
+        df = pd.DataFrame(st.session_state.bookings)
+        st.table(df)
+    else:
+        st.info("No bookings yet.")
+
